@@ -1,14 +1,18 @@
 const API_URL = "http://localhost:3000/books";
 let editId = null;
 
-function fetchPosts() {
+function fetchPosts(searchQuery = "") {
   const xhr = new XMLHttpRequest();
   xhr.open("GET", API_URL + "?_limit=5", true);
   xhr.onload = function () {
     const posts = JSON.parse(xhr.responseText);
     const list = document.getElementById("postList");
     list.innerHTML = "";
-    posts.forEach(post => {
+    posts
+    .filter(post =>
+        post.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    .forEach(post => {
       const tr = document.createElement("tr");
 
       const tdId = document.createElement("td");
@@ -79,5 +83,11 @@ function deletePost(id) {
   xhr.send();
 }
 
+function searchBooks() {
+  const query = document.getElementById("searchInput").value.trim();
+  fetchPosts(query);
+}
+
 // Inicializar
 fetchPosts();
+
